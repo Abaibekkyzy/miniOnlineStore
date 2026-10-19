@@ -22,7 +22,15 @@ public class HomeController {
     @GetMapping(value="/sign-in-page")
     public String signinPage() { return "signin"; }
 
+    @GetMapping(value="/sign-up-page")
+    public String signupPage() { return "signup"; }
+
     @GetMapping(value="/profile")
     @PreAuthorize("isAuthenticated()")
     public String profilePage() { return "profile"; }
+
+    @GetMapping(value="/403-page")
+    public String acessDeniedage(){ return "403"; }
+
+
 }

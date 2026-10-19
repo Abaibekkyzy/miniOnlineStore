@@ -28,4 +28,13 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    public User addUser(User user){
+        User checkUser = userRepository.findByEmail(user.getEmail());
+        if(checkUser==null){
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            return userRepository.save(user);
+        }
+        return null;
+    }
+
 }
