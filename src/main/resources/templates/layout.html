@@ -146,25 +146,78 @@
                 object-fit: cover;
                 display: block;
             }
+
+            .product-bottom {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .product-add-btn {
+                width: 42px;
+                height: 42px;
+                border: none;
+                border-radius: 50%;
+                background: #211e1b;
+                color: white;
+                font-size: 27px;
+                font-weight: 300;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: .3s;
+            }
+
+            .product-add-btn:hover {
+                background: #a49a8e;
+                transform: rotate(90deg);
+            }
+
+            /* Seller form */
+
+            .seller-form-card .form-control {
+                border: 1px solid #dedad5;
+                border-radius: 9px;
+                padding: 12px;
+                box-shadow: none;
+            }
+
+
+
+            /* Seller table */
+
+            .seller-table th {
+                background: #f8f6f3;
+                color: #6d655d;
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+
+            .seller-table th,
+            .seller-table td {
+                padding: 14px 12px;
+                border-color: #eee9e3;
+            }
+
+            .seller-table .btn {
+                border-radius: 8px;
+            }
+
         </style>
     </head>
 
     <body>
+
+
         <nav class="navbar navbar-expand-md navbar-light">
             <div class="container-fluid">
 
                 <a class="navbar-brand" th:href="@{/}">
                     YEPSTORE
                 </a>
-
-<!--                <button class="navbar-toggler" type="button"-->
-<!--                        data-bs-toggle="collapse"-->
-<!--                        data-bs-target="#navbarMenu"-->
-<!--                        aria-controls="navbarMenu"-->
-<!--                        aria-expanded="false"-->
-<!--                        aria-label="Toggle navigation">-->
-<!--                    <span class="navbar-toggler-icon"> </span>-->
-<!--                </button>-->
 
                 <div class="collapse navbar-collapse" id="navbarMenu">
                     <ul class="navbar-nav me-auto">
@@ -188,10 +241,14 @@
                             </a>
                         </li>
 
-                        <li class="nav-item" sec:authorize="hasAnyRole('ROLE_TEACHER')">
-                            <a class="nav-link" th:href="@{/teacher-panel}">
-                                Manager
+                        <li class="nav-item" sec:authorize="hasAnyRole('ROLE_SELLER', 'ROLE_ADMIN')">
+                            <a class="nav-link" th:href="@{/seller-panel}">
+                                Seller page
                             </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/profile}">Profile</a>
                         </li>
 
                         <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
@@ -213,29 +270,31 @@
 
                     </ul>
 
-                    <form class="d-flex search-form" role="search">
-                        <input class="form-control"
-                               type="search"
-                               placeholder="Search products..."
-                               aria-label="Search">
-
-                        <button type="submit" class="search-button">
-                            Search
-                        </button>
+                    <form class="d-flex search-form" role="search" th:action = "@{'/'}">
+                        <input class="form-control me-2"
+                               type="search" placeholder="Search"
+                               aria-label="Search" name = "key"
+                               th:value = "${param.key!=null?param.key:''}">
+                        <button class="search-button" type="submit">Search</button>
                     </form>
                 </div>
 
             </div>
         </nav>
+
         <div class="container mt-5">
             <div class="row">
                 <div class="col-12">
                     <div layout:fragment="content">
+
                     </div>
                 </div>
             </div>
         </div>
     </body>
 
-    <script type = "text/javascript" th:src = "@{'/js/bootstrap.bundle.js'}"></script>
+    <script type = "text/javascript" th:src = "@{'/js/bootstrap.bundle.js'}">
+
+
+    </script>
 </html>

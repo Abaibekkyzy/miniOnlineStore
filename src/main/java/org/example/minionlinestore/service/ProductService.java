@@ -37,5 +37,9 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
+    public List<ProductDTO> searchProduct(String key){
+        List<ProductDTO> productModelList = productRepository.searchProduct("%"+key+"%");
+        return productModelList;
+    }
 
 }
