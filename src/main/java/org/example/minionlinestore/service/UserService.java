@@ -4,6 +4,7 @@ import org.example.minionlinestore.dto.ProductDTO;
 import org.example.minionlinestore.dto.UserDTO;
 import org.example.minionlinestore.mapper.UserMapper;
 import org.example.minionlinestore.model.Product;
+import org.example.minionlinestore.model.Role;
 import org.example.minionlinestore.model.User;
 import org.example.minionlinestore.repository.RoleRepository;
 import org.example.minionlinestore.repository.UserRepository;
@@ -29,6 +30,8 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private RoleRepository roleRepository;
 
     public List<UserDTO>  getUsers()
     {return userMapper.toDTOs(userRepository.findAll());}
@@ -90,6 +93,24 @@ public class UserService implements UserDetailsService {
             return currentUser;
         }
         return null;
+    }
+
+    public UserDTO updateUserRole(Long userId, String roleName) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Role role = roleRepository.findByRole(roleName);
+
+        if (role == null) {
+            throw new RuntimeException("Role not found: " + roleName);
+        }
+
+        if (user.getPermissions().stream()
+                .noneMatch(r -> r.getId().equals(role.getId()))) {
+            user.getPermissions().add(role);
+        }
+
+        return userMapper.toDTO(userRepository.save(user));
     }
 
     public User getCurrentSessionUser(){

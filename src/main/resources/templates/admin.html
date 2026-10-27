@@ -9,7 +9,7 @@
         <h1><span th:text="${#authentication.principal.fullName}"> </span></h1>
         <input type="hidden" id="productId">
 
-        <div class="col-12">
+        <div class="col-8">
             <div class="seller-table-wrap">
                 <table class="table seller-table">
                     <thead>
@@ -27,9 +27,9 @@
 
                 <script type="text/javascript">
 
-                    loadProducts();
+                    loadUsers();
 
-                    function loadProducts(){
+                    function loadUsers(){
 
                         const httpRequest = new XMLHttpRequest();
                         httpRequest.open( "GET", "/user", true);
@@ -44,13 +44,77 @@
                                     tableContent+="<td>"+userList[i].id+"</td>";
                                     tableContent+="<td>"+userList[i].fullName+"</td>";
                                     tableContent+="<td>"+userList[i].email+"</td>";
-                                    tableContent+="<td>"+userList[i].role+"</td>";
-                                    tableContent+="</tr>";
+                                    const roles = userList[i].roles || [];
+
+                                    const availableRoles = [
+                                        { value: "ROLE_CUSTOMER", label: "Customer" },
+                                        { value: "ROLE_SELLER", label: "Seller" },
+                                        { value: "ROLE_MANAGER", label: "Manager" },
+                                        { value: "ROLE_DELIVERY", label: "Delivery" }
+                                    ];
+
+                                    const currentRoleNames = roles.map(role => role.role);
+
+                                    const options = availableRoles
+                                        .filter(role => !currentRoleNames.includes(role.value))
+                                        .map(role =>
+                                            "<option value='" + role.value + "'>" +
+                                            role.label +
+                                            "</option>"
+                                        )
+                                        .join("");
+
+                                    tableContent += "<td>" +
+                                        (currentRoleNames.length > 0
+                                            ? currentRoleNames.join(", ")
+                                            : "No roles assigned") +
+                                        "<select id='role-" + userList[i].id +
+                                        "' class='form-select form-select-sm mt-2' style='width: 160px;'>" +
+                                        "<option value=''>Choose a role</option>" +
+                                        options +
+                                        "</select>" +
+                                        "<button class='btn btn-dark btn-sm mt-2' " +
+                                        "onclick='updateUserRole(" + userList[i].id + ")'>" +
+                                        "ADD ROLE" +
+                                        "</button>" +
+                                        "</td>";
+                                    tableContent += "</tr>";
                                 }
                                 document.getElementById("userListBody").innerHTML = tableContent;
                             }
                         }
                         httpRequest.send();
+                    }
+
+                    function updateUserRole(userId) {
+                        const role = document.getElementById("role-" + userId).value;
+
+                        if (!role) {
+                            alert("Please choose a role!");
+                            return;
+                        }
+
+                        fetch("/user/" + userId + "/role", {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ role: role })
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error("Role update failed: " + response.status);
+                                }
+                                return response.json();
+                            })
+                            .then(() => {
+                                alert("Role added successfully!");
+                                loadUsers();
+                            })
+                            .catch(error => {
+                                console.error("Role update error:", error);
+                                alert("Could not add role: " + error.message);
+                            });
                     }
 
                 </script>

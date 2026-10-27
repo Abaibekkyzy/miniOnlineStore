@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.minionlinestore.model.Role;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class UserDTO {
@@ -11,5 +13,5 @@ public class UserDTO {
     private String fullName;
     private String email;
     private String password;
-    private Role role;
+    private List<Role> roles;
 }

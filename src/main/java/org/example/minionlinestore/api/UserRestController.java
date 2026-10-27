@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value="/user")
@@ -47,6 +48,18 @@ public class UserRestController {
     @PutMapping("/profile")
     public UserDTO updateCurrentUserProfile(@RequestBody UserDTO userDTO) {
         return userService.updateCurrentUserProfile(userDTO);
+    }
+
+    @PutMapping("/{id}/role")
+    @PreAuthorize("hasRole('ADMIN')")
+    public UserDTO updateUserRole(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> request) {
+
+        return userService.updateUserRole(
+                id,
+                request.get("role")
+        );
     }
 
 }

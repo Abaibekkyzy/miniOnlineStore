@@ -27,7 +27,7 @@ public class User extends BaseModel
     private String password;
 
     @ManyToMany(fetch= FetchType.EAGER) //мгновенно подтягивает значение а лейзи будет ждать пока вы сами не обратитесь //?????
-    private List<Role> permissions;
+    private List<Role> permissions = new java.util.ArrayList<>();
 
 
     @Override
